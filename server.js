@@ -24,6 +24,26 @@ app.use(cors({
   'preflightContinue': false
 }));
 
+app.post('/phone/check', function(request, response) {
+  console.log(request.body);
+  console.log(request.body.phone_number)
+  function isPhoneExist () {
+    return smsapi.contacts
+    .list()
+    .phoneNumber(request.body.phone_number)
+    .execute()
+    .then(function(result) {
+      console.log(result);
+      (result.size !== 0) ? response.send("Phone number exists in database") : response.send("Phone number OK")
+    })
+    .catch(function(error) {
+      console.log(error);
+      response.send('500 Internal Server Error');
+    })
+  }
+  isPhoneExist();
+})
+
 app.get("/contacts", function(req, res){
   function getContactsList() {
     return smsapi.contacts

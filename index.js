@@ -6,6 +6,7 @@ class App extends React.Component {
     this.state = {
       contacts: [],
       groups: [],
+      isPhoneExist: false;
       contactSaved: false,
       serverError: ''
     }
@@ -45,7 +46,20 @@ class App extends React.Component {
     })
   }
 
+  isContactExist = (phone) => {
+    axios.post("http://localhost:3001/phone/check", phone)
+    .then((response) => {
+      console.log("server response" + response)
+      this.setState(...this.state, isPhoneExist: true)
+    })
+  }
+
   validatePhoneNumber = (_rule, _value, callback) => {
+    console.log("phone " + this.props.form.getFieldValue('phone_number'));
+    let phoneNumber = {phone_number: this.props.form.getFieldValue('phone_number')};
+    console.log(phoneNumber.phone_number.length);
+
+    if (phoneNumber.phone_number.length === 11) {this.isContactExist(phoneNumber);}
     (this.state.contacts.find((contact) => contact.phone_number === this.props.form.getFieldValue('phone_number')) === undefined) ?
     callback() : callback("Istnieje użytkownik o podanym numerze telefonu. Proszę wpisać inny numer telefonu lub skontaktować się z administratorem");
   }
@@ -107,6 +121,7 @@ class App extends React.Component {
             {getFieldDecorator("phone_number",{
               rules: [
                 {required: true, message: "Wpisz twój numer telefonu!"},
+                {max: 11, message: "Numer telefonu zbyt długi - maksimum 11 znaków"},
                 {pattern: new RegExp(/48[0-9]{9}/), message: "Niepoprawny numer telefonu"},
                 {validator: this.validatePhoneNumber}
               ],
