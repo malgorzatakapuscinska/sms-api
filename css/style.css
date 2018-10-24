@@ -1,0 +1,60 @@
+.container {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+form.ant-form--centered {
+  margin: 60px auto 0 auto;
+  width: 40%;
+  padding: 40px;
+  border: 1px solid rgba(225, 225, 225, 0.2);
+  border-radius: 10px;
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+}
+
+@media screen and (max-width: 992px) {
+  form.ant-form--centered {
+    margin: 40px auto 0 auto;
+    width: 90%;
+    padding: 40px;
+  }
+}
+
+form.ant-form--centered label {
+  font-weight: bold;
+}
+
+form.ant-form--centered .label-wordWrapped label {
+  display: inline-block;
+  white-space: normal;
+  text-align: left;
+}
+
+div.ant-alert-centered {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  width: 40%;
+  margin: 40px auto 0 auto;
+}
+
+@media screen and (max-width: 992px) {
+  div.ant-alert-centered {
+    width: 90%;
+  }
+}
+
+div.ant-alert-serverError {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  max-width: 500px;
+  height: 500px;
+  padding: 20px;
+  font-size: 18px;
+  text-transform: uppercase;
+  white-space: normal;
+  margin-top: 100px;
+}

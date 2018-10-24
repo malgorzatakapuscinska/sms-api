@@ -1,0 +1,39 @@
+{
+  "name": "sms-api",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "startAll": "npm-run-all -p server start watch:sass",
+    "server": "http-server --cors",
+    "start": "babel index.js --watch --out-file build/index-compiled.js",
+    "watch:sass": "node-sass --output-style expanded sass/style.scss css/style.css --watch",
+    "startNodemon": "nodemon server.js"
+  },
+  "author": "Małgorzata Kapuścińska",
+  "license": "ISC",
+  "dependencies": {
+    "antd": "^3.10.1",
+    "axios": "^0.18.0",
+    "body-parser": "^1.18.3",
+    "cors": "^2.8.4",
+    "express": "^4.16.4",
+    "react": "^16.5.2",
+    "react-dom": "^16.5.2",
+    "request": "^2.88.0",
+    "request-promise": "^4.2.2",
+    "smsapi": "^1.5.7"
+  },
+  "devDependencies": {
+    "@babel/cli": "^7.1.2",
+    "@babel/core": "^7.1.2",
+    "@babel/plugin-proposal-class-properties": "^7.1.0",
+    "@babel/preset-env": "^7.1.0",
+    "@babel/preset-react": "^7.0.0",
+    "http-server": "^0.11.1",
+    "node-sass": "^4.9.4",
+    "nodemon": "^1.18.4",
+    "npm-run-all": "^4.1.3"
+  }
+}
