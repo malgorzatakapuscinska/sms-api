@@ -1,5 +1,5 @@
 const { Form, Input, Select, Button, Checkbox, Alert } = antd;
-
+const APP_URL = "http://localhost:3001";
 class App extends React.Component {
   constructor (props){
     super(props);
@@ -14,10 +14,20 @@ class App extends React.Component {
     const phoneNumber = {phone_number: this.props.form.getFieldValue('phone_number')};
     this.props.form.validateFields((error, values) => {
       if(!error) {
-        axios.post("http://localhost:3001/contact/delete", phoneNumber)
+        const requestUrl = "contacts/" + values.phone_number;
+        axios({
+          method: 'DELETE',
+          url: requestUrl
+        })
           .then(response => {
-            (response.data !== "Contact not found") ? this.setState({userRemoved: true, userExists: false}) :
-            this.setState({userRemoved: false, userExists: false});
+            console.log(response);
+            if (response.status === "200") {
+              this.setState({userRemoved: true, userExists: true}, () => console.log(this.state));
+            }
+          })
+          .catch(error => {
+            console.log(error);
+            this.setState({userRemoved: false, userExists: false}, () => console.log(this.state));
           })
       }
     })

@@ -1,6 +1,5 @@
 const express=require('express');
 const request=require('request');
-const rp=require('request-promise');
 const path=require('path');
 const cors=require('cors');
 const bodyParser = require('body-parser');
@@ -10,8 +9,8 @@ const optionsSignIn = {
   root: __dirname + '/sign-in-form/build',
   dotfiles: 'deny',
   headers: {
-      'x-timestamp': Date.now(),
-      'x-sent': true
+    'x-timestamp': Date.now(),
+    'x-sent': true
   }
 };
 
@@ -19,14 +18,14 @@ const optionsSignOut = {
   root: __dirname + '/sign-out-form/build',
   dotfiles: 'deny',
   headers: {
-      'x-timestamp': Date.now(),
-      'x-sent': true
+    'x-timestamp': Date.now(),
+    'x-sent': true
   }
 };
 
 smsapi = new SMSAPI({
   oauth: {
-      accessToken: 'b1HYcodZJ0swHqQt25It32EknkSGNBO6X9XurwbU'
+    accessToken: 'b1HYcodZJ0swHqQt25It32EknkSGNBO6X9XurwbU'
   }
 });
 
@@ -153,48 +152,57 @@ app.post("/contacts/add", function(request, response) {
 
 /* SIGN OUT FORM ENDPOINTS*/
 
-app.get('/sign-out-form', function(request, response) {
-  response.sendFile('index.html', optionsSignOut, function(error) {
+app.get('/sign-out-form', (request, response) => {
+  response.sendFile('index.html', optionsSignOut, (error) => {
     if(error) throw errror;
     else {console.log("File sent");}
   });
 })
-app.get('/sign-out-form/css/style.css', function(request, response) {
+app.get('/sign-out-form/css/style.css', (request, response) => {
   response.sendFile('css/style.css', optionsSignOut, function(error) {
     if(error) throw error;
     else {console.log("File sent");}
   });
 })
 
-app.get('/index-compiled1.js', function(request, response) {
-  response.sendFile('index-compiled1.js', optionsSignOut, function(error) {
+app.get('/index-compiled1.js', (request, response) => {
+  response.sendFile('index-compiled1.js', optionsSignOut, (error) => {
     if(error) throw error;
     else {console.log("File index-complied1.js sent");}
   });
 })
 
-app.post("/contact/delete", function(request, response){
+app.delete("/contacts/:phone", (request, response) => {
   let contactId = '';
+  console.log(request);
   function getContactIdandDelete() {
     return smsapi.contacts
     .list()
-    .phoneNumber(request.body.phone_number)
+    .phoneNumber(request.params.phone)
     .execute()
     .then(function(result) {
       if (result.size !== 0) {
+        contactId = result.collection[0].id;
         contactDelete(contactId);
-      } else response.send('Contact not found')
+      } else {response.status('404').send('Not found')
+      console.log(result);
+      }
+    })
+    .catch(error => {
+      console.log(error);
     })
   }
-  function contactDelete(number) {
+  function contactDelete(id) {
     return smsapi.contacts
-    .delete(number)
+    .delete(id)
     .execute()
     .then(function(result) {
-      response.send('contact sucessfully deleted');
+      console.log(result);
+      response.status('200').send('Deleted');
     })
     .catch(function(error) {
-      response.send("Error encountered")
+      console.log(error);
+      response.status('404').send("Not found")
     })
   }
   getContactIdandDelete();
