@@ -27,6 +27,7 @@ var _antd = antd,
     Button = _antd.Button,
     Checkbox = _antd.Checkbox,
     Alert = _antd.Alert;
+var APP_URL = "http://localhost:3001";
 
 var App =
 /*#__PURE__*/
@@ -48,13 +49,29 @@ function (_React$Component) {
 
       _this.props.form.validateFields(function (error, values) {
         if (!error) {
-          axios.post("http://localhost:3001/contact/delete", phoneNumber).then(function (response) {
-            response.data !== "Contact not found" ? _this.setState({
-              userRemoved: true,
-              userExists: false
-            }) : _this.setState({
+          var requestUrl = "contacts/" + values.phone_number;
+          axios({
+            method: 'DELETE',
+            url: requestUrl
+          }).then(function (response) {
+            console.log(response.status);
+
+            if (response.status === 200) {
+              _this.setState({
+                userRemoved: true,
+                userExists: true
+              }, function () {
+                return console.log(_this.state);
+              });
+            }
+          }).catch(function (error) {
+            console.log(error);
+
+            _this.setState({
               userRemoved: false,
               userExists: false
+            }, function () {
+              return console.log(_this.state);
             });
           });
         }

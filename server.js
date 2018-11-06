@@ -127,7 +127,7 @@ app.get("/groups", function(request, response){
     })
     .catch(function(error){
       console.log(error);
-      response.send("404 not found")
+      response.status('404').send("404 not found");
     })
   }
   getContactsGroups();
@@ -143,6 +143,7 @@ app.post("/contacts/add", function(request, response) {
       response.send("Data saved correct");
     })
     .catch(function(error) {
+      console.log(error);
       response.send('500 Internal Server Error');
     })
   }
@@ -181,10 +182,12 @@ app.delete("/contacts/:phone", (request, response) => {
     .phoneNumber(request.params.phone)
     .execute()
     .then(function(result) {
-      if (result.size !== 0) {
+      if (result && result.size !== 0) {
         contactId = result.collection[0].id;
         contactDelete(contactId);
-      } else {response.status('404').send('Not found')
+      } else {
+        if (!result) response.status('503').send('Service unavailable');
+        else response.status('404').send('Not found');
       console.log(result);
       }
     })

@@ -27,41 +27,143 @@ var _antd = antd,
     Button = _antd.Button,
     Checkbox = _antd.Checkbox,
     Alert = _antd.Alert;
+var APP_URL = "http://localhost:3001";
 
-var App =
+var SignOutForm =
 /*#__PURE__*/
 function (_React$Component) {
-  _inherits(App, _React$Component);
+  _inherits(SignOutForm, _React$Component);
 
-  function App(props) {
+  function SignOutForm(props) {
     var _this;
 
-    _classCallCheck(this, App);
+    _classCallCheck(this, SignOutForm);
 
-    _this = _possibleConstructorReturn(this, _getPrototypeOf(App).call(this, props));
+    _this = _possibleConstructorReturn(this, _getPrototypeOf(SignOutForm).call(this, props));
 
     _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "handlesubmit", function (event) {
       event.preventDefault();
+      var phoneNumber = {
+        phone_number: _this.props.form.getFieldValue('phone_number')
+      };
 
-      _this.props.form.validateFields({
+      _this.props.form.validateFields(function (error, values) {
+        if (!error) {
+          var requestUrl = "contacts/" + values.phone_number;
+          axios({
+            method: 'DELETE',
+            url: requestUrl
+          }).then(function (response) {
+            console.log(response.status);
+
+            if (response.status === 200) {
+              _this.setState({
+                userRemoved: true,
+                userExists: true
+              }, function () {
+                return console.log(_this.state);
+              });
+            }
+          }).catch(function (error) {
+            console.log(error);
+
+            _this.setState({
+              userRemoved: false,
+              userExists: false
+            }, function () {
+              return console.log(_this.state);
+            });
+          });
+        }
+      });
+    });
+
+    _this.state = {
+      userRemoved: false,
+      userExists: true
+    };
+    return _this;
+  }
+
+  _createClass(SignOutForm, [{
+    key: "render",
+    value: function render() {
+      var _this$props$form = this.props.form,
+          getFieldDecorator = _this$props$form.getFieldDecorator,
+          validateFields = _this$props$form.validateFields;
+      return React.createElement("div", {
+        className: "container"
+      }, React.createElement(Form, {
+        layout: "horizontal",
+        onSubmit: this.handlesubmit,
+        className: "ant-form--centered"
+      }, this.state.userRemoved === true ? React.createElement(Alert, {
+        message: "Subskrypcja anulowana. Dzi\u0119kujemy za zg\u0142oszenie",
+        type: "success",
+        closable: true,
+        onClose: this.onClose,
+        className: "ant-alert-centered"
+      }) : null, this.state.userExists === false ? React.createElement(Alert, {
+        message: "B\u0142\u0105d. Nie istnieje u\u017Cytkownik o podanym numerze telefonu.",
+        type: "error",
+        closable: true,
+        onClose: this.onClose,
+        className: "ant-alert-centered"
+      }) : null, React.createElement("h1", null, " Aby wypisa\u0107 si\u0119 z subskrypcji podaj numer telefonu u\u017Cyty podczas rejestracji "), React.createElement(Form.Item, {
+        label: "Numer telefonu kom\xF3rkowego wg wzoru: 48xxxxxxxxx",
+        className: "label-wordWrapped"
+      }, getFieldDecorator("phone_number", {
+        rules: [{
+          required: true,
+          message: "Wpisz twój numer telefonu!"
+        }, {
+          max: 11,
+          message: "Numer telefonu zbyt długi - maksimum 11 znaków"
+        }, {
+          pattern: new RegExp(/48[0-9]{9}/),
+          message: "Niepoprawny numer telefonu"
+        }]
+      })(React.createElement(Input, {
+        placeholder: "np. 48666666666"
+      }))), React.createElement(Form.Item, null, React.createElement(Button, {
+        type: "primary",
+        htmlType: "submit"
+      }, "Subskrybuj"))), ")}");
+    }
+  }]);
+
+  return SignOutForm;
+}(React.Component);
+
+var SignInForm =
+/*#__PURE__*/
+function (_React$Component2) {
+  _inherits(SignInForm, _React$Component2);
+
+  function SignInForm(props) {
+    var _this2;
+
+    _classCallCheck(this, SignInForm);
+
+    _this2 = _possibleConstructorReturn(this, _getPrototypeOf(SignInForm).call(this, props));
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this2)), "handlesubmit", function (event) {
+      event.preventDefault();
+
+      _this2.props.form.validateFields({
         force: true
       }, function (error, values) {
         if (!error) {
-          _this.isPhoneAndEmailExist().then(function (value) {
-            _this.props.form.validateFields({
+          _this2.isPhoneAndEmailExist().then(function (value) {
+            _this2.props.form.validateFields({
               force: true
             }, function (error, values) {
-              if (!error) {
-                var stringifyValues = JSON.stringify(values);
-                axios.post('http://localhost:3001/contacts/add', values).then(function (response) {
-                  response && response.data !== "500 Internal Server Error" ? _this.setState({
-                    contactSaved: true,
-                    serverError: ''
-                  }) : _this.setState({
-                    contactSaved: false,
-                    serverError: response.data
-                  });
-                });
+              if (!error && _this2.state.contactSaved === true) {
+                _this2.setState({
+                  contactSaved: false
+                }, _this2.contactAdd(values));
+              } else if (!error && _this2.state.contactSaved === false) {
+                _this2.contactAdd(values);
               }
             });
           });
@@ -69,17 +171,34 @@ function (_React$Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "isPhoneAndEmailExist", function () {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this2)), "contactAdd", function (values) {
+      console.log(_this2.state.contactSaved);
+      var stringifyValues = JSON.stringify(values);
+      axios.post('/contacts/add', values).then(function (response) {
+        console.log(response.status);
+        response && response.status === 200 ? _this2.setState({
+          contactSaved: true,
+          serverError: ''
+        }, function () {
+          return console.log(_this2.state);
+        }) : _this2.setState({
+          contactSaved: false,
+          serverError: response.status
+        });
+      });
+    });
+
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this2)), "isPhoneAndEmailExist", function () {
       return new Promise(function (resolve, reject) {
         var valuesToValidate = {
-          phone_number: _this.props.form.getFieldValue('phone_number'),
-          email: _this.props.form.getFieldValue('email')
+          phone_number: _this2.props.form.getFieldValue('phone_number'),
+          email: _this2.props.form.getFieldValue('email')
         };
-        axios.post("http://localhost:3001/validation", valuesToValidate).then(function (response) {
-          response.data.phone_number === 'exists' ? _this.setState({
+        axios.post("/validation", valuesToValidate).then(function (response) {
+          response.data.phone_number === 'exists' ? _this2.setState({
             isPhoneExist: true
           }) : null;
-          response.data.email === 'exists' ? _this.setState({
+          response.data.email === 'exists' ? _this2.setState({
             isEmailExist: true
           }) : null;
           resolve('done');
@@ -89,64 +208,64 @@ function (_React$Component) {
       });
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "validatePhoneNumber", function (_rule, _value, callback) {
-      _this.state.isPhoneExist ? _this.setState({
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this2)), "validatePhoneNumber", function (_rule, _value, callback) {
+      _this2.state.isPhoneExist ? _this2.setState({
         isPhoneExist: false
       }, callback("Istnieje użytkownik o podanym numerze telefonu. Proszę wpisać inny numer telefonu lub skontaktować się z administratorem")) : callback();
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "validateEmail", function (_rule, _value, callback) {
-      _this.state.isEmailExist ? _this.setState({
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this2)), "validateEmail", function (_rule, _value, callback) {
+      _this2.state.isEmailExist ? _this2.setState({
         isEmailExist: false
       }, callback("Istnieje użytkownik o podanym adresie e-mail. Proszę użyc innego adresu e-mail lub skontaktować się z administratorem")) : callback();
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "validateTerms", function (_rule, value, callback) {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this2)), "validateTerms", function (_rule, value, callback) {
       return value !== true ? callback('Please accept the terms and conditions') : callback();
     });
 
-    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this)), "onClose", function () {
+    _defineProperty(_assertThisInitialized(_assertThisInitialized(_this2)), "onClose", function () {
       console.log("closed");
     });
 
-    _this.state = {
+    _this2.state = {
       groups: [],
       isPhoneExist: false,
       isEmailExist: false,
       contactSaved: false,
       serverError: ''
     };
-    return _this;
+    return _this2;
   }
 
-  _createClass(App, [{
+  _createClass(SignInForm, [{
     key: "componentDidMount",
     value: function componentDidMount() {
-      var _this2 = this;
+      var _this3 = this;
 
-      axios.get("http://localhost:3001/groups").then(function (response) {
-        response.data !== "404 not found" ? _this2.setState({
+      axios.get('/groups').then(function (response) {
+        response.status !== "404" && response.status !== "503" ? _this3.setState({
           groups: response.data,
           serverError: ''
-        }) : _this2.setState({
-          serverError: response.data
+        }) : _this3.setState({
+          serverError: response.status
         });
       });
     }
   }, {
     key: "render",
     value: function render() {
-      var _this$props$form = this.props.form,
-          getFieldDecorator = _this$props$form.getFieldDecorator,
-          validateFields = _this$props$form.validateFields;
+      var _this$props$form2 = this.props.form,
+          getFieldDecorator = _this$props$form2.getFieldDecorator,
+          validateFields = _this$props$form2.validateFields;
       var _this$state = this.state,
           groups = _this$state.groups,
           contactSaved = _this$state.contactSaved,
           serverError = _this$state.serverError;
       return React.createElement("div", {
         className: "container"
-      }, serverError === "404 not found" ? React.createElement(Alert, {
-        message: "Przepraszamy rejestracja jest chwilowo niemo\u017Cliwa. Spr\xF3buj ponownie p\xF3\u017Aniej.",
+      }, serverError === "503" ? React.createElement(Alert, {
+        message: "B\u0142\u0105d serwera. Rejestracja jest chwilowo niemo\u017Cliwa. Spr\xF3buj ponownie p\xF3\u017Aniej.",
         type: "error",
         className: "ant-alert-serverError"
       }) : React.createElement(Form, {
@@ -243,8 +362,15 @@ function (_React$Component) {
     }
   }]);
 
-  return App;
+  return SignInForm;
 }(React.Component);
 
-var WrappedApp = Form.create()(App);
-ReactDOM.render(React.createElement("div", null, React.createElement(WrappedApp, null)), document.getElementById('app'));
+var requestPath = window.location.pathname;
+
+if (requestPath === '/sign-in-form') {
+  var WrappedSignInForm = Form.create()(SignInForm);
+  ReactDOM.render(React.createElement("div", null, React.createElement(WrappedSignInForm, null)), document.getElementById('app'));
+} else {
+  var WrappedSignOutForm = Form.create()(SignOutForm);
+  ReactDOM.render(React.createElement("div", null, React.createElement(WrappedSignOutForm, null)), document.getElementById('app'));
+}

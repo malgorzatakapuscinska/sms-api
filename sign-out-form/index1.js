@@ -20,8 +20,8 @@ class App extends React.Component {
           url: requestUrl
         })
           .then(response => {
-            console.log(response);
-            if (response.status === "200") {
+            console.log(response.status);
+            if (response.status === 200) {
               this.setState({userRemoved: true, userExists: true}, () => console.log(this.state));
             }
           })
