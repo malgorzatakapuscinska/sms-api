@@ -5,16 +5,7 @@ const cors=require('cors');
 const bodyParser = require('body-parser');
 const SMSAPI = require('smsapi');
 
-const optionsSignIn = {
-  root: __dirname + '/build',
-  dotfiles: 'deny',
-  headers: {
-    'x-timestamp': Date.now(),
-    'x-sent': true
-  }
-};
-
-const optionsSignOut = {
+const options = {
   root: __dirname + '/build',
   dotfiles: 'deny',
   headers: {
@@ -43,28 +34,28 @@ app.use(cors({
 /* SIGN IN FORM ENDPOINTS */
 
 app.get('/sign-in-form', function(request, response) {
-  response.sendFile('index.html', optionsSignIn, function(error) {
+  response.sendFile('index.html', options, function(error) {
     if(error) throw error;
     else {console.log("File sent");
     }
   });
 })
 app.get('/sign-in-form/css/style.css', function(request, response) {
-  response.sendFile('/css/style.css', optionsSignIn, function(error) {
+  response.sendFile('/css/style.css', options, function(error) {
     if(error) throw error;
     else {console.log("File sent");}
   });
 })
 
 app.get('/index-compiled.js', function(request, response) {
-  response.sendFile('index-compiled.js', optionsSignIn, function(error) {
+  response.sendFile('index-compiled.js', options, function(error) {
     if(error) throw error;
     else {console.log("File index-complied.js sent");}
   });
 })
 
 app.get('/zgoda.pdf', function(request, response) {
-  response.sendFile('zgoda.pdf', optionsSignIn, function(error) {
+  response.sendFile('zgoda.pdf', options, function(error) {
     if(error) throw error;
     else {console.log("File zgoda.pdf sent");}
   });
@@ -154,20 +145,20 @@ app.post("/contacts/add", function(request, response) {
 /* SIGN OUT FORM ENDPOINTS*/
 
 app.get('/sign-out-form', (request, response) => {
-  response.sendFile('index.html', optionsSignOut, (error) => {
+  response.sendFile('index.html', options, (error) => {
     if(error) throw errror;
     else {console.log("File sent");}
   });
 })
 app.get('/sign-out-form/css/style.css', (request, response) => {
-  response.sendFile('css/style.css', optionsSignOut, function(error) {
+  response.sendFile('css/style.css', options, function(error) {
     if(error) throw error;
     else {console.log("File sent");}
   });
 })
 
 app.get('/index-compiled1.js', (request, response) => {
-  response.sendFile('index-compiled.js', optionsSignOut, (error) => {
+  response.sendFile('index-compiled.js', options, (error) => {
     if(error) throw error;
     else {console.log("File index-complied.js sent");}
   });
