@@ -6,7 +6,7 @@ const bodyParser = require('body-parser');
 const SMSAPI = require('smsapi');
 
 const optionsSignIn = {
-  root: __dirname + '/sign-in-form/build',
+  root: __dirname + '/build',
   dotfiles: 'deny',
   headers: {
     'x-timestamp': Date.now(),
@@ -15,7 +15,7 @@ const optionsSignIn = {
 };
 
 const optionsSignOut = {
-  root: __dirname + '/sign-out-form/build',
+  root: __dirname + '/build',
   dotfiles: 'deny',
   headers: {
     'x-timestamp': Date.now(),
@@ -167,9 +167,9 @@ app.get('/sign-out-form/css/style.css', (request, response) => {
 })
 
 app.get('/index-compiled1.js', (request, response) => {
-  response.sendFile('index-compiled1.js', optionsSignOut, (error) => {
+  response.sendFile('index-compiled.js', optionsSignOut, (error) => {
     if(error) throw error;
-    else {console.log("File index-complied1.js sent");}
+    else {console.log("File index-complied.js sent");}
   });
 })
 

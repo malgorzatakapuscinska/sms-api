@@ -5,11 +5,9 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "startAll": "npm-run-all -p start1 start2 sass1 sass2 startNodemon",
-    "start1": "babel sign-in-form/index.js --presets=@babel/preset-env,@babel/preset-react --plugins=@babel/proposal-class-properties --watch --out-file sign-in-form/build/index-compiled.js",
-    "start2": "babel sign-out-form/index1.js --presets=@babel/preset-env,@babel/preset-react --plugins=@babel/proposal-class-properties --watch --out-file sign-out-form/build/index-compiled1.js",
-    "sass1": "node-sass --output-style expanded sign-in-form/sass/style.scss sign-in-form/build/css/style.css --watch",
-    "sass2": "node-sass --output-style expanded sign-out-form/sass/style.scss sign-out-form/build/css/style.css --watch",
+    "startAll": "npm-run-all -p start sass startNodemon",
+    "start": "babel index.js --presets=@babel/preset-env,@babel/preset-react --plugins=@babel/proposal-class-properties --watch --out-file build/index-compiled.js",
+    "sass": "node-sass --output-style expanded sass/style.scss build/css/style.css --watch",
     "startNodemon": "nodemon server.js"
   },
   "author": "Małgorzata Kapuścińska",
